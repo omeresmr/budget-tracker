@@ -1,5 +1,6 @@
 "use strict";
 
+///////////////
 // DOM Elements
 
 const dateInput = document.querySelector(".date-picker");
@@ -15,6 +16,7 @@ const revenueDisplay = document.querySelector(".revenue");
 const addTransactionButton = document.querySelector(".add-transaction");
 const transactionsContainer = document.querySelector(".transactions");
 
+///////////////
 // Variables
 
 const transactions = [];
@@ -24,15 +26,22 @@ let totalBalance = 0;
 let totalRevenue = 0;
 let totalSpending = 0;
 
+///////////////
 // Functions
 
-const formatCurrency = (value) => value.toFixed(2).replace(".", ",") + " €";
+const formatCurrency = (value) =>
+  // Format the currency into german format (change the locale parameter to your ISO country code, and change the currency format)
+  new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  }).format(value);
 
 const displayError = (message) => {
   errorMessage.textContent = message;
   errorMessage.classList.remove("collapse");
 };
 
+// Disable the add trans. button, if there is a error message
 const updateAddButtonState = () => {
   addTransactionButton.disabled = !errorMessage.classList.contains("collapse");
 };
@@ -41,25 +50,42 @@ const isRadioSelected = () =>
   [...transactionTypeRadios].some((radio) => radio.checked);
 
 const validateInputs = () => {
+  // Get the date that got chose
   const dateValue = new Date(dateInput.value);
+
+  // you can change these values in index.html (input type date)
+  // 2010-01-01
   const minDate = new Date(dateInput.min);
+
+  // 2045-12-31
   const maxDate = new Date(dateInput.max);
 
+  // Check if user entered a trans. amount
   if (!amountInput.value) {
     displayError("Please enter a transaction amount.");
+
+    // Check if user chose a trans. type
   } else if (!isRadioSelected()) {
     displayError("Please select a transaction type.");
+
+    // Check if user chose a valid trans. date
   } else if (dateValue < minDate || dateValue > maxDate) {
     displayError("Date must be between 2010 and 2045.");
+
+    // Check if user entered a trans. description
   } else if (!descriptionInput.value) {
     displayError("Please enter a description.");
+
+    // Hide the error label
   } else {
     errorMessage.classList.add("collapse");
   }
 
+  // disable or enable add button
   updateAddButtonState();
 };
 
+// Reset inputs & add trans. button
 const resetForm = () => {
   amountInput.value = "";
   descriptionInput.value = "";
@@ -69,24 +95,28 @@ const resetForm = () => {
 };
 
 const toggleTextColor = (value, element) => {
+  // if value is above 0, change text-color to green
   if (value > 0) {
     element.classList.add("text-green-500");
     element.classList.remove("text-red-500");
+    // else if value is below 0, change text-color to red
   } else if (value < 0) {
     element.classList.add("text-red-500");
     element.classList.remove("text-green-500");
+    // else change text-color to black
   } else {
     element.classList.remove("text-red-500");
     element.classList.remove("text-green-500");
   }
-  console.log(value);
 };
 
 const updateTotalsUI = () => {
+  // Show totals
   balanceDisplay.textContent = formatCurrency(totalBalance);
   spendingDisplay.textContent = formatCurrency(totalSpending);
   revenueDisplay.textContent = formatCurrency(totalRevenue);
 
+  // Toggle text colors
   toggleTextColor(totalBalance, balanceDisplay);
   toggleTextColor(totalSpending, spendingDisplay);
   toggleTextColor(totalRevenue, revenueDisplay);
@@ -112,9 +142,13 @@ const renderTransaction = (transaction) => {
 };
 
 const addTransaction = () => {
+  // Replace the comma with a dot, so we can parse it into a number
   const amount = parseFloat(amountInput.value.replace(",", "."));
+
+  // Get the transaction type
   const type = revenueRadio.checked ? "revenue" : "spending";
 
+  // Update totals
   if (type === "revenue") {
     totalBalance += amount;
     totalRevenue += amount;
@@ -123,6 +157,7 @@ const addTransaction = () => {
     totalSpending -= amount;
   }
 
+  // Create a new transaction object
   const newTransaction = {
     id: Date.now(),
     amount: amountInput.value,
@@ -131,17 +166,28 @@ const addTransaction = () => {
     description: descriptionInput.value,
   };
 
+  // Save the transaction object
   transactions.push(newTransaction);
   saveTransactions();
+
+  // Show the transaction
   renderTransaction(newTransaction);
+
+  // Update totals
   updateTotalsUI();
+
+  // Reset form
   resetForm();
 };
 
 const removeTransaction = (id) => {
+  // Get the index to delete
   const index = transactions.findIndex((t) => t.id === id);
+
+  // Get the transaction
   const selectedTransaction = transactions[index];
 
+  // Update totals
   if (selectedTransaction.type === "revenue") {
     totalBalance -= selectedTransaction.amount;
     totalRevenue -= selectedTransaction.amount;
@@ -149,28 +195,42 @@ const removeTransaction = (id) => {
     totalBalance += Number(selectedTransaction.amount);
     totalSpending += Number(selectedTransaction.amount);
   }
+
+  // Update transactions array (remove the transaction)
   transactions.splice(index, 1);
+
+  // Update localstorage
   saveTransactions();
+
+  // Update UI
   updateTotalsUI();
 };
 
-// Localstorage functions
+///////////////
+// LocalStorage functions
 
+// Update "transactions" in localStorage
 const saveTransactions = function () {
   localStorage.setItem("transactions", JSON.stringify(transactions));
 };
 
 const loadTransactions = function () {
+  // Get "transactions" from localStorage
   const savedTransactions = localStorage.getItem("transactions");
 
   if (savedTransactions) {
+    // Parse the JSON format into JS format
     const parsedTransactions = JSON.parse(savedTransactions);
 
+    // Get the transactions and show them
     parsedTransactions.forEach((transaction) => {
       transactions.push(transaction);
       renderTransaction(transaction);
+
+      // Replace the comma with a dot, so we can parse it into a number
       const amount = parseFloat(transaction.amount.replace(",", "."));
 
+      // Update totals
       if (transaction.type === "spending") {
         totalBalance -= Number(amount);
         totalSpending -= Number(amount);
@@ -180,6 +240,7 @@ const loadTransactions = function () {
       }
     });
 
+    // Update totals UI
     updateTotalsUI();
   }
 };
@@ -189,12 +250,18 @@ const loadTransactions = function () {
 addTransactionButton.addEventListener("click", addTransaction);
 
 amountInput.addEventListener("input", () => {
+  // Only allow digits and comma
   let cleaned = amountInput.value.replace(/[^0-9,]/g, "");
+
+  // Split the input into before comma, and after comma
   const parts = cleaned.split(",");
 
+  // Check if the user entered a comma
   if (parts.length > 1) {
+    // Only allow one comma
     cleaned = cleaned.replace(/(,.*?),/g, "$1");
     if (parts[1].length > 2) {
+      // Only allow 2 digits after the comma
       parts[1] = parts[1].slice(0, 2);
       cleaned = parts.join(",");
     }
@@ -205,13 +272,25 @@ amountInput.addEventListener("input", () => {
 });
 
 amountInput.addEventListener("paste", (event) => {
+  // Prevent pasting
   event.preventDefault();
+
+  // Remove every sign, thats not a comma or a digit
   const pasted = event.clipboardData.getData("text").replace(/[^0-9,]/g, "");
+
+  // Split the pasted input into before comma, and after comma
   const parts = pasted.split(",");
+
+  // Check if the user pasted a comma
   if (parts.length > 2) {
+    // Slice the value after the comma to only 2 places
     parts[1] = parts[1].slice(0, 2);
+
+    // Delete everything after the first comma
     while (parts.length > 1) parts.pop();
   }
+
+  // Convert back to a string
   amountInput.value = parts.join(",");
 });
 
@@ -228,13 +307,22 @@ dateInput.addEventListener("change", () => {
 
 transactionsContainer.addEventListener("click", (e) => {
   if (e.target.closest("button")) {
+    // Get the transaction el
     const transactionElement = e.target.closest(".transaction");
+
+    // Get the ID of the el
     const transactionID = Number(transactionElement.dataset.id);
+
+    // Remove the el from DOM
     transactionElement.remove();
+
+    // Remove transaction
     removeTransaction(transactionID);
   }
 });
 
+// Load transactions once the Website (DOM) got load
 document.addEventListener("DOMContentLoaded", loadTransactions);
 
+// Set the value of the datePicker, to today
 dateInput.value = today;
