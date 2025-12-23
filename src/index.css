@@ -67,7 +67,7 @@
     focus:outline-indigo-200;
   }
 
-  .transaction-type-label {
+  .transaction-type {
     @apply border border-indigo-200 rounded-lg mt-3 p-5 duration-300
     hover:cursor-pointer
   peer-checked:border-indigo-300;

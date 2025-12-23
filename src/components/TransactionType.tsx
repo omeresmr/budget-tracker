@@ -12,7 +12,7 @@ export default function TransactionType({
     <div className="text-center">
       <input type="radio" name="transaction" id={id} className="hidden peer" />
       <label htmlFor={id} className={`transaction-type ${colorClass}`}>
-        Spending
+        {id}
       </label>
     </div>
   );

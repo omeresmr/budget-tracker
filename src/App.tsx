@@ -3,6 +3,8 @@ import Footer from './components/Footer';
 import Card from './components/Card';
 import Balance from './components/Balance';
 import AddTransactionForm from './components/AddTransactionForm';
+import ErrorText from './components/ErrorText';
+import Button from './components/Button';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Card className="bg-white p-3 md:px-9 md:py-4">
             <h2 className="mb-6">Add Transaction</h2>
             <AddTransactionForm />
+            <ErrorText />
+            <Button />
           </Card>
         </section>
         <section>
