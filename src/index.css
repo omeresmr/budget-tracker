@@ -39,7 +39,7 @@
 
   button {
     @apply bg-slate-700 rounded-3xl text-white font-bold px-24 py-2
-    hover:cursor-pointer hover:scale-105
+    hover:cursor-pointer hover:scale-105 mt-2
     active:scale-90
     disabled:bg-slate-300 disabled:pointer-events-none duration-300;
   }

@@ -3,25 +3,34 @@ import Footer from './components/Footer';
 import Card from './components/Card';
 import Balance from './components/Balance';
 import AddTransactionForm from './components/AddTransactionForm';
-import ErrorText from './components/ErrorText';
-import Button from './components/Button';
+import type { Transaction } from './Types/Transaction';
+import { useState } from 'react';
+import { useEffect } from 'react';
+
+const transactions = [];
 
 function App() {
+  const [totalBalance, setTotalBalance] = useState(15);
+  const [totalRevenue, setTotalRevenue] = useState(20);
+  const [totalSpending, setTotalSpending] = useState(-5);
+
   return (
     <>
       <Header />
       <main>
         <section className="bg-white">
           <Card className="bg-indigo-200 mx-16 p-4 md:p-6">
-            <Balance balance="0,00 €" spending="0,00 €" revenue="0,00 €" />
+            <Balance
+              balance={totalBalance}
+              spending={totalSpending}
+              revenue={totalRevenue}
+            />
           </Card>
         </section>
         <section className="bg-indigo-200">
           <Card className="bg-white p-3 md:px-9 md:py-4">
             <h2 className="mb-6">Add Transaction</h2>
             <AddTransactionForm />
-            <ErrorText />
-            <Button />
           </Card>
         </section>
         <section>

@@ -1,3 +1,7 @@
-export default function Button() {
-  return <button disabled>Add</button>;
+interface ButtonProps {
+  disabledCondition: boolean;
+}
+
+export default function Button({ disabledCondition }: ButtonProps) {
+  return <button disabled={disabledCondition}>Add</button>;
 }
