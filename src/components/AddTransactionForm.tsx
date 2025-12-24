@@ -3,16 +3,19 @@ import TransactionType from './TransactionType';
 import Button from './Button';
 import ErrorText from './ErrorText';
 import type { Transaction } from '../Types/Transaction';
-import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 
-export default function AddTransactionForm() {
-  const [formData, setFormData] = useState<Transaction>({
-    amount: 0,
-    description: '',
-    date: new Date().toISOString().split('T')[0],
-    type: '',
-  });
+interface AddTransactionFormProps {
+  formData: Transaction;
+  handleClick: () => void;
+  handleChange: React.EventHandler<ChangeEvent>;
+}
 
+export default function AddTransactionForm({
+  formData,
+  handleClick,
+  handleChange,
+}: AddTransactionFormProps) {
   const validate = () => {
     const { amount, description, date, type } = formData;
     const dateValue = new Date(date);
@@ -28,27 +31,6 @@ export default function AddTransactionForm() {
     return '';
   };
   const errorMessage = validate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    let finalValue = value;
-
-    // Input Validation for amount input
-    if (name === 'amount') {
-      // 1. Only allow digits and comma
-      finalValue = value.replace(/[^0-9,]/g, '');
-
-      // 2. Only allow one comma
-      const parts = finalValue.split(',');
-      if (parts.length > 2) finalValue = `${parts[0]},${parts[1]}`;
-
-      // 3. Only allow 2 digits after the comma
-      if (parts.length > 1 && parts[1].length > 2)
-        finalValue = `${parts[0]},${parts[1].slice(0, 2)}`;
-    }
-    setFormData((prev) => ({ ...prev, [name]: finalValue }));
-  };
 
   return (
     <div className="flex flex-col items-center">
@@ -82,15 +64,17 @@ export default function AddTransactionForm() {
             id="revenue"
             colorClass="peer-checked:bg-green-200"
             handleChange={handleChange}
+            checked={formData.type === 'revenue'}
           />
           <TransactionType
             id="spending"
             colorClass="peer-checked:bg-red-200"
             handleChange={handleChange}
+            checked={formData.type === 'spending'}
           />
         </div>
       </div>
-      <Button disabledCondition={!!errorMessage} />
+      <Button disabledCondition={!!errorMessage} handleClick={handleClick} />
       <ErrorText errorMessage={errorMessage} />
     </div>
   );

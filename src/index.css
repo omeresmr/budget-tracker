@@ -36,13 +36,6 @@
   h3 {
     @apply text-[18px] md:text-[22px];
   }
-
-  button {
-    @apply bg-slate-700 rounded-3xl text-white font-bold px-24 py-2
-    hover:cursor-pointer hover:scale-105 mt-2
-    active:scale-90
-    disabled:bg-slate-300 disabled:pointer-events-none duration-300;
-  }
 }
 
 @layer components {
@@ -71,5 +64,24 @@
     @apply border border-indigo-200 rounded-lg mt-3 p-5 duration-300
     hover:cursor-pointer
   peer-checked:border-indigo-300;
+  }
+
+  .add-transaction-btn {
+    @apply bg-slate-700 rounded-3xl text-white font-bold px-24 py-2
+    hover:cursor-pointer hover:scale-105 mt-2
+    active:scale-90
+    disabled:bg-slate-300 disabled:pointer-events-none duration-300;
+  }
+
+  .delete-transaction-btn {
+    @apply w-6 h-6 hover:cursor-pointer hover:opacity-90 active:opacity-80;
+  }
+
+  .transaction-card {
+    @apply border border-white rounded-2xl flex justify-between items-center min-w-[320px];
+  }
+
+  .transaction-container {
+    @apply flex gap-4 justify-center items-center mx-8 last:mb-8;
   }
 }
