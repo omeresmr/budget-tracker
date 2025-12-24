@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# Budget Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean and simple web application for managing personal finances.  
+Originally built with Vanilla JavaScript, this project has been refactored into a modern React application to improve scalability, maintainability, and developer experience.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Add Transactions**  
+  Record income (revenue) and expenses (spending) with an amount, date, and description.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dynamic Overview**  
+  Automatic calculation and real-time display of total balance, total revenue, and total spending derived from the transaction list.
 
-## Expanding the ESLint configuration
+- **Visual Feedback**  
+  Color-coded transaction types provide a quick and clear financial overview.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Delete Transactions**  
+  Remove individual transactions safely using stable ID tracking.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Data Persistence**  
+  Transactions are synchronized with the browser’s Local Storage, ensuring data remains available after page reloads.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Input Validation**  
+  The form prevents submission until all required fields (amount, type, date, description) are valid.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Smart Amount Formatting**  
+  Input sanitization allows only numeric characters and a single decimal separator, limited to two decimal places.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Technologies Used
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **React**  
+  Component-based UI development using Hooks (`useState`, `useEffect`).
+
+- **TypeScript**  
+  Strong typing and clearly defined interfaces for transaction data.
+
+- **Tailwind CSS**  
+  Utility-first styling for fast and responsive UI development.
+
+- **Vite**  
+  Fast development server and optimized production builds.
+
+---
+
+## Technical Highlights
+
+- **Derived State Logic**  
+  Financial totals are calculated dynamically from the transaction array, ensuring a single source of truth.
+
+- **Controlled Components**  
+  All form inputs are fully controlled via React state for reliable validation and predictable behavior.
+
+- **Lazy State Initialization**  
+  Local Storage is accessed only once during initial state creation to avoid unnecessary re-renders.
+
+---
+
+## Screenshots
+
+![Dashboard](./screenshots/screenshot-1.png)
+![Add Transaction](./screenshots/screenshot-2.png)
+
+---
